@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Transportasi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .button-container {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        pre {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistem Manajemen Transportasi</h1>
+    <div class="container">
+        <div class="button-container">
+            <button onclick="tampilkanPelanggan()">Tampilkan Pelanggan</button>
+        </div>
+        <pre id="output"></pre>
+    </div>
+    
+    <script>
+        // Class untuk kendaraan
+        class Kendaraan {
+            constructor(nama, tipe) {
+                this.nama = nama;
+                this.tipe = tipe;
+                this.disewa = false;
+            }
+
+            sewa() {
+                if (this.disewa) {
+                    console.log(`${this.nama} sudah disewa.`);
+                    return false;
+                }
+                this.disewa = true;
+                return true;
+            }
+
+            kembalikan() {
+                this.disewa = false;
+            }
+        }
+
+        // Class untuk pelanggan
+        class Pelanggan {
+            constructor(nama, nomorTelepon) {
+                this.nama = nama;
+                this.nomorTelepon = nomorTelepon;
+                this.kendaraanDisewa = null;
+            }
+
+            sewaKendaraan(kendaraan) {
+                if (kendaraan.sewa()) {
+                    this.kendaraanDisewa = kendaraan;
+                    console.log(`${this.nama} menyewa ${kendaraan.nama}.`);
+                } else {
+                    console.log(`${kendaraan.nama} tidak tersedia.`);
+                }
+            }
+
+            kembalikanKendaraan() {
+                if (this.kendaraanDisewa) {
+                    console.log(`${this.nama} mengembalikan ${this.kendaraanDisewa.nama}.`);
+                    this.kendaraanDisewa.kembalikan();
+                    this.kendaraanDisewa = null;
+                } else {
+                    console.log(`${this.nama} tidak sedang menyewa kendaraan.`);
+                }
+            }
+        }
+
+        // Sistem Manajemen Transportasi
+        class SistemTransportasi {
+            constructor() {
+                this.pelangganList = [];
+            }
+
+            tambahPelanggan(pelanggan) {
+                this.pelangganList.push(pelanggan);
+            }
+
+            tampilkanPelanggan() {
+                let output = "Daftar pelanggan yang sedang menyewa kendaraan:\n";
+                this.pelangganList.forEach((pelanggan) => {
+                    if (pelanggan.kendaraanDisewa) {
+                        output += `- ${pelanggan.nama} (${pelanggan.nomorTelepon}) menyewa ${pelanggan.kendaraanDisewa.nama}.\n`;
+                    }
+                });
+                document.getElementById("output").textContent = output;
+            }
+        }
+
+        // Contoh penggunaan
+        const motor = new Kendaraan("Yamaha NMAX", "Motor");
+        const mobil = new Kendaraan("Toyota Avanza", "Mobil");
+
+        const pelanggan1 = new Pelanggan("Budi", "08123456789");
+        const pelanggan2 = new Pelanggan("Ani", "08987654321");
+
+        const sistem = new SistemTransportasi();
+        sistem.tambahPelanggan(pelanggan1);
+        sistem.tambahPelanggan(pelanggan2);
+
+        pelanggan1.sewaKendaraan(motor);
+        pelanggan2.sewaKendaraan(mobil);
+
+        function tampilkanPelanggan() {
+            sistem.tampilkanPelanggan();
+        }
+    </script>
+</body>
+</html>
